@@ -1,0 +1,48 @@
+.btn-primary, .btn-warning, .btn-secondary {
+    border-radius: 6px;
+    font-size: 14px;
+    padding: 6px 12px;
+    min-width: 120px;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    color: white;
+}
+
+.btn-warning {
+    background-color: #ffc107;
+    color: black;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+}
+
+.btn-warning:hover {
+    background-color: #e0a800;
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
+}
+
+.form-control {
+    border-radius: 6px;
+}
+
+.text-danger {
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+.button-group {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}

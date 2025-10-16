@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title th:text="#{label.cartTitle}">Shopping Cart</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" th:href="@{/css/menunavy.css}">
+</head>
+<body>
+<div class="container mt-5">
+    <h1 th:text="#{label.cartTitle}">Shopping Cart</h1>
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th th:text="#{label.appliance}">Appliance</th>
+            <th th:text="#{label.quantity}">Quantity</th>
+            <th th:text="#{label.amount}">Amount</th>
+            <th th:text="#{label.actions}">Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="item : ${cart.orderRows}">
+            <td th:text="${item.applianceName}">Appliance Name</td>
+            <td th:text="${item.number}">Quantity</td>
+            <td th:text="'$' + ${item.amount}">Amount</td>
+            <td>
+                <form th:action="@{/cart/update}" method="post" style="display:inline;">
+                    <input type="hidden" name="applianceName" th:value="${item.applianceName}">
+                    <input type="number" name="quantity" th:value="${item.number}" min="1">
+                    <button class="btn btn-sm btn-primary" type="submit" th:text="#{label.update}">Update</button>
+                </form>
+                <form th:action="@{/cart/remove}" method="post" style="display:inline;">
+                    <input type="hidden" name="applianceName" th:value="${item.applianceName}">
+                    <button class="btn btn-sm btn-danger" type="submit" th:text="#{label.remove}">Remove</button>
+                </form>
+            </td>
+        </tr>
+        <tr th:if="${cart.orderRows.isEmpty()}">
+            <td colspan="4" class="text-center" th:text="#{label.emptyCart}">Your cart is empty</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div class="d-flex justify-content-between">
+        <a th:href="@{/}" class="btn btn-secondary" th:text="#{label.continueShopping}">Continue Shopping</a>
+        <a th:href="@{/cart/checkout}" class="btn btn-success" th:text="#{label.checkout}">Checkout</a>
+    </div>
+</div>
+</body>
+</html>

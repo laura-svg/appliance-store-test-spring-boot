@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Order Rows</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        .table {
+            border: 1px solid #dee2e6;
+            box-shadow: none;
+        }
+
+        .table-hover tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .actions-cell {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .btn-icon {
+            background: none;
+            border: none;
+            color: #007bff;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        .btn-icon:hover {
+            color: #0056b3;
+        }
+
+        .btn-icon.text-danger:hover {
+            color: #dc3545;
+        }
+
+        .btn-icon.text-success:hover {
+            color: #28a745;
+        }
+
+        .btn-icon.text-secondary:hover {
+            color: #6c757d;
+        }
+
+        .pagination .page-link {
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .pagination .page-item.active .page-link {
+            background-color: #007bff;
+            border-color: #007bff;
+            color: #fff;
+        }
+
+        .pagination .page-link:hover {
+            background-color: #f1f1f1;
+        }
+
+        th {
+            cursor: pointer;
+        }
+
+        th.asc::after {
+            content: " ▲";
+            font-size: 0.8em;
+        }
+
+        th.desc::after {
+            content: " ▼";
+            font-size: 0.8em;
+        }
+    </style>
+</head>
+<body>
+<nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb bg-white p-2 rounded shadow-sm">
+        <li class="breadcrumb-item">
+            <a href="/" class="text-primary text-decoration-none">
+                <i class="fa fa-home"></i> <span th:text="#{breadcrumb.home}">Home</span>
+            </a>
+        </li>
+        <li class="breadcrumb-item">
+            <a href="/orders" class="text-primary text-decoration-none">
+                <i class="fa fa-shopping-cart"></i> <span th:text="#{breadcrumb.orders}">Orders</span>
+            </a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">
+            <i class="fa fa-cogs"></i> <span th:text="#{breadcrumb.order.items}">Order Items</span>
+        </li>
+    </ol>
+</nav>
+
+<div class="container mt-5">
+    <h1 class="text-center mb-4"><i class="fa fa-list-alt"></i> Order Items</h1>
+
+    <!-- Таблица товаров -->
+    <table class="table table-hover">
+        <thead class="table-dark">
+        <tr>
+            <th data-sort="appliance" th:text="#{table.header.appliance}">Appliance</th>
+            <th data-sort="quantity" th:text="#{table.header.quantity}">Quantity</th>
+            <th data-sort="amount" th:text="#{table.header.amount}">Amount</th>
+            <th th:text="#{table.header.actions}">Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="row : ${rows}">
+            <td th:if="!${row.editMode}" th:text="${row.applianceName}"></td>
+            <td th:if="!${row.editMode}" th:text="${row.number}"></td>
+            <td th:if="!${row.editMode}" th:text="${row.amount}"></td>
+            <td th:if="!${row.editMode}" class="actions-cell">
+                <form th:action="@{/orders/{id}/rows/editMode(id=${order.id})}" method="post" style="margin: 0;">
+                    <input type="hidden" name="rowId" th:value="${row.id}">
+                    <button type="submit" class="btn-icon" title="Edit">
+                        <i class="fa fa-edit"></i>
+                    </button>
+                </form>
+                <form th:action="@{/orders/{id}/rows/remove(id=${order.id})}" method="post" style="margin: 0;">
+                    <input type="hidden" name="rowId" th:value="${row.id}">
+                    <button type="submit" class="btn-icon text-danger" title="Remove">
+                        <i class="fa fa-trash"></i>
+                    </button>
+                </form>
+            </td>
+            <form th:if="${row.editMode}" th:action="@{/orders/{id}/rows/update(id=${order.id})}" method="post" style="margin: 0;">
+                <input type="hidden" name="rowId" th:value="${row.id}">
+                <td>
+                    <select name="applianceName" class="form-control">
+                        <option th:each="appliance : ${appliances}"
+                                th:value="${appliance.name}"
+                                th:text="${appliance.name}"
+                                th:selected="${appliance.name == row.applianceName}"></option>
+                    </select>
+                </td>
+                <td>
+                    <input type="number" name="quantity" th:value="${row.number}" class="form-control" required>
+                </td>
+                <td th:text="${row.amount}"></td>
+                <td class="actions-cell">
+                    <button type="submit" class="btn-icon text-success" title="Save">
+                        <i class="fa fa-save"></i>
+                    </button>
+                </td>
+            </form>
+            <td th:if="${row.editMode}" class="actions-cell">
+                <form th:action="@{/orders/{id}/rows/cancelEdit(id=${order.id})}" method="post" style="margin: 0;">
+                    <input type="hidden" name="rowId" th:value="${row.id}">
+                    <button type="submit" class="btn-icon text-secondary" title="Cancel">
+                        <i class="fa fa-times"></i>
+                    </button>
+                </form>
+            </td>
+        </tr>
+        <tr th:if="${rows.isEmpty()}">
+            <td colspan="4" class="text-center text-muted">No items found</td>
+        </tr>
+        </tbody>
+    </table>
+    <form th:action="@{/orders/{id}/rows/add(id=${order.id})}" method="post" class="row g-3 mt-4">
+        <div class="col-md-5">
+            <label for="applianceName" class="form-label">
+                <i class="fa fa-plug"></i> <span th:text="#{label.appliance}">Appliance</span>
+            </label>
+            <select name="applianceName" id="applianceName" class="form-control">
+                <option th:each="appliance : ${appliances}" th:value="${appliance.name}" th:text="${appliance.name}"></option>
+            </select>
+        </div>
+        <div class="col-md-5">
+            <label for="quantity" class="form-label">
+                <i class="fa fa-sort-numeric-asc"></i> <span th:text="#{label.quantity}">Quantity</span>
+            </label>
+            <input type="number" name="quantity" class="form-control" id="quantity" required>
+        </div>
+        <div class="col-md-2 d-flex align-items-end">
+            <button type="submit" class="btn btn-success w-100">
+                <i class="fa fa-plus"></i> <span th:text="#{button.add}">Add</span>
+            </button>
+        </div>
+    </form>
+    <div class="text-center mt-4">
+        <a th:href="@{/orders}" class="btn btn-secondary">
+            <i class="fa fa-arrow-left"></i> <span th:text="#{button.backToOrders}">Back to Orders</span>
+        </a>
+    </div>
+    <nav aria-label="Page navigation" class="mt-4">
+        <ul class="pagination justify-content-center"></ul>
+    </nav>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const tableBody = document.querySelector('.table tbody');
+        const rows = Array.from(tableBody.querySelectorAll('tr:not([th\\:if])'));
+        const headers = document.querySelectorAll('th[data-sort]');
+        let currentPage = 0;
+        const rowsPerPage = 5;
+
+        function renderTable(page) {
+            const start = page * rowsPerPage;
+            const end = start + rowsPerPage;
+            tableBody.innerHTML = '';
+            rows.slice(start, end).forEach(row => tableBody.appendChild(row));
+            renderPagination();
+        }
+
+        function renderPagination() {
+            const paginationContainer = document.querySelector('.pagination');
+            const totalPages = Math.ceil(rows.length / rowsPerPage);
+            paginationContainer.innerHTML = '';
+
+            if (totalPages <= 1) {
+                paginationContainer.style.display = 'none';
+                return;
+            }
+
+            paginationContainer.style.display = 'flex';
+
+            const prev = document.createElement('li');
+            prev.className = `page-item ${currentPage === 0 ? 'disabled' : ''}`;
+            prev.innerHTML = `<a class="page-link" href="#" aria-label="Previous"><i class="fa fa-chevron-left"></i></a>`;
+            prev.addEventListener('click', (e) => {
+                e.preventDefault();
+                if (currentPage > 0) renderTable(--currentPage);
+            });
+            paginationContainer.appendChild(prev);
+
+            for (let i = 0; i < totalPages; i++) {
+                const pageItem = document.createElement('li');
+                pageItem.className = `page-item ${i === currentPage ? 'active' : ''}`;
+                pageItem.innerHTML = `<a class="page-link" href="#">${i + 1}</a>`;
+                pageItem.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    currentPage = i;
+                    renderTable(currentPage);
+                });
+                paginationContainer.appendChild(pageItem);
+            }
+
+            const next = document.createElement('li');
+            next.className = `page-item ${currentPage === totalPages - 1 ? 'disabled' : ''}`;
+            next.innerHTML = `<a class="page-link" href="#" aria-label="Next"><i class="fa fa-chevron-right"></i></a>`;
+            next.addEventListener('click', (e) => {
+                e.preventDefault();
+                if (currentPage < totalPages - 1) renderTable(++currentPage);
+            });
+            paginationContainer.appendChild(next);
+        }
+
+        headers.forEach(header => {
+            header.addEventListener('click', () => {
+                const sortKey = header.getAttribute('data-sort');
+                const isAscending = header.classList.contains('asc');
+                const direction = isAscending ? -1 : 1;
+
+                headers.forEach(h => h.classList.remove('asc', 'desc'));
+                header.classList.toggle('asc', !isAscending);
+                header.classList.toggle('desc', isAscending);
+
+                rows.sort((a, b) => {
+                    const aText = a.querySelector(`[th\\:text="\${row.${sortKey}}"]`).textContent.trim();
+                    const bText = b.querySelector(`[th\\:text="\${row.${sortKey}}"]`).textContent.trim();
+                    return aText.localeCompare(bText, undefined, { numeric: true }) * direction;
+                });
+
+                renderTable(currentPage);
+            });
+        });
+
+        renderTable(currentPage);
+    });
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

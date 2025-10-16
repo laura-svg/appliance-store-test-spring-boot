@@ -1,0 +1,118 @@
+<div th:fragment="navy" xmlns:sec="http://www.w3.org/1999/xhtml">
+    <div class="d-flex flex-column bg-dark text-white" style="width: 250px; height: 100vh;">
+        <h4 class="text-white p-3 text-center">
+            <link rel="stylesheet" th:href="@{/css/menunavy.css}">
+            <a th:href="@{/}" class="text-white text-decoration-none d-flex align-items-center justify-content-center">
+                <i class="fa fa-home me-2" aria-hidden="true"></i>
+                <strong th:text="#{shop.name}">Shop Name</strong>
+            </a>
+        </h4>
+        <div class="auth-buttons">
+            <div sec:authorize="isAuthenticated()" class="card mb-3">
+                <div class="card-body text-center">
+                    <a href="#" class="btn btn-user d-block mb-2">
+                        <i class="fa fa-user-circle"></i>
+                        <span sec:authentication="name" class="ms-2">User</span>
+                    </a>
+                    <a th:href="@{/logout}" class="btn btn-small btn-logout">
+                        <i class="fa fa-sign-out-alt"></i>
+                        <span th:text="#{nav.logout}">Logout</span>
+                    </a>
+                </div>
+            </div>
+
+            <div sec:authorize="isAnonymous()" class="card">
+                <div class="card-body text-center">
+                    <a th:href="@{/login}" class="btn btn-small btn-login">
+                        <i class="fa fa-sign-in-alt"></i>
+                        <span th:text="#{nav.login}">Login</span>
+                    </a>
+                    <a th:href="@{/register}" class="btn btn-small btn-register">
+                        <i class="fa fa-user-plus"></i>
+                        <span th:text="#{nav.register}">Register</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <ul class="nav nav-pills flex-column mb-auto">
+            <li class="nav-item" sec:authorize="hasAnyRole('ADMIN','EMPLOYEE')">
+                <a th:href="@{/clients}"
+                   class="nav-link text-white"
+                   th:classappend="${activePage == 'clients'} ? 'active'">
+                    <i class="fa fa-users"></i>
+                    <span th:text="#{clients.menu.name}">Clients</span>
+                </a>
+            </li>
+            <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+                <a th:href="@{/employees}"
+                   class="nav-link text-white"
+                   th:classappend="${activePage == 'employees'} ? 'active'">
+                    <i class="fa fa-user-circle"></i>
+                    <span th:text="#{employees.menu.name}">Employees</span>
+                </a>
+            </li>
+            <li class="nav-item" sec:authorize="hasAnyRole('EMPLOYEE','ADMIN')">
+                <a th:href="@{/manufacturers}"
+                   class="nav-link text-white"
+                   th:classappend="${activePage == 'manufacturers'} ? 'active'">
+                    <i class="fa fa-industry"></i>
+                    <span th:text="#{manufacturers.menu.name}">Manufacturers</span>
+                </a>
+            </li>
+            <li class="nav-item" sec:authorize="hasAnyRole('EMPLOYEE','ADMIN')">
+                <a th:href="@{/appliances}"
+                   class="nav-link text-white"
+                   th:classappend="${activePage == 'appliances'} ? 'active'">
+                    <i class="fa fa-cogs"></i>
+                    <span th:text="#{appliances.menu.name}">Appliances</span>
+                </a>
+            </li>
+
+            <li class="nav-item" sec:authorize="hasAnyRole('EMPLOYEE','ADMIN',)">
+                <a th:href="@{/orders}"
+                   class="nav-link text-white"
+                   th:classappend="${activePage == 'orders'} ? 'active'">
+                    <i class="fa fa-shopping-cart"></i>
+                    <span th:text="#{order.menu.name}">Orders</span>
+                </a>
+            </li>
+
+            <li class="nav-item" sec:authorize="hasRole('CLIENT')">
+                <a th:href="@{/cart}"
+                   class="nav-link text-white"
+                   th:classappend="${activePage == 'cart'} ? 'active'">
+                    <i class="fa fa-cart-plus"></i>
+                    <span th:text="#{cart.menu.name}">Cart</span>
+                </a>
+            </li>
+        </ul>
+        </ul>
+
+        <div class="p-3 mt-auto text-center">
+            <a th:if="${#locale.language == 'uk'}"
+               th:href="@{${httpServletRequest.requestURI}(lang='en')}"
+               class="d-inline-block me-2">
+                <img src="https://flagcdn.com/w320/gb.png"
+                     alt="English"
+                     style="width: 34px; height: 26px; vertical-align: middle;" />
+            </a>
+            <img th:if="${#locale.language == 'en'}"
+                 src="https://flagcdn.com/w320/gb.png"
+                 alt="English"
+                 style="width: 34px; height: 26px; vertical-align: middle; opacity: 0.7; cursor: default;" />
+            <a th:if="${#locale.language == 'en'}"
+               th:href="@{${httpServletRequest.requestURI}(lang='uk')}"
+               class="d-inline-block">
+                <img src="https://flagcdn.com/w320/ua.png"
+                     alt="Ukrainian"
+                     style="width: 34px; height: 26px; vertical-align: middle;" />
+            </a>
+            <img th:if="${#locale.language == 'uk'}"
+                 src="https://flagcdn.com/w320/ua.png"
+                 alt="Ukrainian"
+                 style="width: 34px; height: 26px; vertical-align: middle; opacity: 0.7; cursor: default;" />
+        </div>
+    </div>
+</div>
+
+

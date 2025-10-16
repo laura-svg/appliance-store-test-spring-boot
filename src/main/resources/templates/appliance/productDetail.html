@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+    />
+    <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+    />
+    <link rel="stylesheet" th:href="@{/css/menunavy.css}">
+    <title th:with="title=${appliance.name} + ' ' + #{label.details}" th:text="${title}">Product Details</title>
+</head>
+<body>
+<div class="container mt-5">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb bg-white p-2 rounded shadow-sm">
+            <li class="breadcrumb-item">
+                <a href="/" class="text-decoration-none text-primary">
+                    <i class="fa fa-home"></i> <span th:text="#{label.home}">Home</span>
+                </a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page" th:text="${appliance.name}">Product Details</li>
+        </ol>
+    </nav>
+
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="shadow-sm rounded mb-3">
+                <img
+                        class="img-fluid rounded"
+                        src="https://static.vecteezy.com/system/resources/previews/014/317/219/original/coming-soon-banner-icon-cartoon-style-vector.jpg"
+                        alt="No Image"
+                />
+            </div>
+        </div>
+        <div class="col-md-6">
+            <h1 class="fw-bold mb-3" th:text="${appliance.name}">Product Name</h1>
+            <p class="text-muted" th:text="${appliance.description ?: #messages['label.noApplianceDescription']}">
+                Description of the appliance goes here.
+            </p>
+
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item"><strong th:text="#{label.category}">Category:</strong> <span
+                        th:text="${appliance.category}">Category</span></li>
+                <li class="list-group-item"><strong th:text="#{label.model}">Model:</strong> <span th:text="${appliance.model}">Model</span></li>
+                <li class="list-group-item"><strong th:text="#{label.manufacturer}">Manufacturer:</strong> <span
+                        th:text="${appliance.manufacturer.name}">Manufacturer</span></li>
+                <li class="list-group-item"><strong th:text="#{label.powerType}">Power Type:</strong> <span th:text="${appliance.powerType}">Power Type</span>
+                </li>
+                <li class="list-group-item"><strong th:text="#{label.power}">Power:</strong> <span
+                        th:text="${appliance.power} + ' W'">Power</span></li>
+                <li class="list-group-item"><strong th:text="#{label.price}">Price:</strong> <span class="text-success fw-bold"
+                                                                                                   th:text="'$' + ${appliance.getFormattedPrice()}">Price</span>
+                </li>
+            </ul>
+
+            <!-- Add to Cart Form -->
+            <form th:action="@{/cart/add}" method="post" class="mt-4">
+                <input type="hidden" name="applianceId" th:value="${appliance.id}">
+                <div class="mb-3">
+                    <label for="quantity" class="form-label"><strong th:text="#{label.quantity}">Quantity:</strong></label>
+                    <input
+                            type="number"
+                            name="quantity"
+                            id="quantity"
+                            class="form-control"
+                            value="1"
+                            min="1"
+                            required
+                    />
+                </div>
+                <button type="submit" class="btn btn-primary btn-lg">
+                    <i class="fa fa-shopping-cart"></i> <span th:text="#{label.addToCart}">Add to Cart</span>
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

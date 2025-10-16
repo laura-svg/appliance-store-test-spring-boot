@@ -1,0 +1,40 @@
+body {
+    background: linear-gradient(135deg, #007bff, #6610f2);
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.card {
+    border-radius: 15px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    background-color: #ffffff;
+}
+.form-control {
+    border-radius: 10px;
+}
+.btn-primary {
+    background: linear-gradient(135deg, #004085, #0056b3);
+    border: none;
+    border-radius: 10px;
+    transition: background 0.3s, transform 0.2s;
+}
+.btn-primary:hover {
+    background: linear-gradient(135deg, #0056b3, #007bff);
+    transform: scale(1.05);
+}
+.btn-home {
+    margin-top: 15px;
+    font-size: 14px;
+    color: #007bff;
+    text-decoration: none;
+}
+.btn-home:hover {
+    text-decoration: underline;
+    color: #0056b3;
+}
+.error-message {
+    color: #dc3545;
+    font-size: 0.875em;
+    margin-top: 0.25rem;
+}
